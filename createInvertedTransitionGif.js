@@ -1,54 +1,58 @@
 const GIFEncoder = require('gifencoder');
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas } = require('canvas');
 const fs = require('fs');
 
 const width = 400;
 const height = 400;
-const frames = 60; // Adjust for a smoother or quicker transition
+const transitionSteps = 100; // Number of steps to complete the transition
 
+// Initialize GIFEncoder
 const encoder = new GIFEncoder(width, height);
 encoder.start();
-encoder.setRepeat(0);
-encoder.setDelay(100); // Adjust delay between frames for speed of transition
-encoder.setQuality(10); // 10 is default quality
+encoder.setRepeat(0); // Looping: 0 for infinite loop
+encoder.setDelay(20); // Delay between frames in milliseconds
+encoder.setQuality(10); // Image quality, 1-20
 
+// Create a canvas
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 
-// Initialize the canvas with the starting color
-ctx.fillStyle = 'rgb(0, 0, 255)'; // Start with blue
-ctx.fillRect(0, 0, width, height);
-
-const startColor = { r: 0, g: 0, b: 255 }; // Blue
-const endColor = { r: 255, g: 255, b: 0 }; // Yellow
-const changeRate = 0.01; // Rate of color change per frame
-
-// Function to interpolate color
-function interpolateColor(color1, color2, factor) {
-    if (factor > 1) factor = 1;
-    const result = { r: 0, g: 0, b: 0 };
-    result.r = Math.round(color1.r + factor * (color2.r - color1.r));
-    result.g = Math.round(color1.g + factor * (color2.g - color1.g));
-    result.b = Math.round(color1.b + factor * (color2.b - color1.b));
-    return result;
+// Function to lerp (linear interpolation) between two values
+function lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end;
 }
 
-// Generate frames
-for (let frame = 0; frame <= frames; frame++) {
-    let factor = frame / frames;
-    let pixelData = ctx.getImageData(0, 0, width, height);
-    for (let i = 0; i < pixelData.data.length; i += 4) {
-        // Randomly decide if the pixel should start changing color
-        if (Math.random() < factor) {
-            let color = interpolateColor(startColor, endColor, Math.random() * factor);
-            pixelData.data[i] = color.r; // R
-            pixelData.data[i + 1] = color.g; // G
-            pixelData.data[i + 2] = color.b; // B
+// Function to generate a frame at a specific step in the transition
+function generateFrame(step) {
+    // Create an imageData object to manipulate pixels
+    let imageData = ctx.getImageData(0, 0, width, height);
+    let data = imageData.data;
+
+    // Loop through all pixels
+    for (let i = 0; i < data.length; i += 4) {
+        // Randomly decide whether to update this pixel based on the current step
+        if (Math.random() < (step / transitionSteps)) {
+            // Transition from blue to yellow
+            data[i] = lerp(0, 255, step / transitionSteps);     // R
+            data[i + 1] = lerp(0, 255, step / transitionSteps); // G
+            data[i + 2] = lerp(255, 0, step / transitionSteps); // B
         }
     }
-    ctx.putImageData(pixelData, 0, 0);
+
+    // Put the modified pixels back on the canvas
+    ctx.putImageData(imageData, 0, 0);
+
+    // Add the canvas to the GIF as the next frame
     encoder.addFrame(ctx);
 }
 
+// Generate each frame of the transition
+for (let i = 0; i <= transitionSteps; i++) {
+    generateFrame(i);
+}
+
+// Finalize the GIF and save it
 encoder.finish();
-console.log('Inverted color transition GIF created successfully!');
+fs.writeFileSync('transitionEffect.gif', encoder.out.getData());
+
+console.log('Transition effect GIF created successfully!');
