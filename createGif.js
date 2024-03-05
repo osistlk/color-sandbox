@@ -1,11 +1,9 @@
 const GIFEncoder = require('gifencoder');
 const { createCanvas } = require('canvas');
-const fs = require('fs');
 
 // Configuration for the GIF
 const width = 400;
 const height = 400;
-const frameCount = 10;
 
 // Colors for each frame (HEX or RGB)
 const colors = [
@@ -31,7 +29,6 @@ encoder.setDelay(500); // frame delay in ms
 encoder.setQuality(10); // image quality. 1 - 20
 
 // Create a writable stream to save the GIF
-const stream = encoder.createReadStream().pipe(fs.createWriteStream('solidColorsGif.gif'));
 
 // Create a canvas to draw each frame
 const canvas = createCanvas(width, height);
