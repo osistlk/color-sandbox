@@ -19,6 +19,7 @@ encoder.setRepeat(0); // 0 for repeat, -1 for no-repeat
 encoder.setDelay(50); // Frame delay in ms for animation speed
 encoder.setQuality(10); // Image quality, 1-20
 
+// eslint-disable-next-line no-unused-vars
 const stream = encoder.createReadStream().pipe(fs.createWriteStream('parabolicColorTransition.gif'));
 
 const canvas = createCanvas(width, height);
