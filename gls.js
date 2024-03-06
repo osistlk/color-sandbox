@@ -7,15 +7,15 @@ const canvasHeight = 2160; // 4K Height
 const canvas = createCanvas(canvasWidth, canvasHeight);
 const ctx = canvas.getContext('2d');
 
-// Set a light beige background
-ctx.fillStyle = '#f5f5dc';
+// Set a dark green background
+ctx.fillStyle = '#013220'; // Dark green, like a forest floor
 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-// Soft, warm palette generator
-function getRandomColor() {
-    const h = Math.floor(Math.random() * 35); // Hue between 0 and 35 for a warm palette
-    const s = Math.floor(Math.random() * 40) + 60; // Saturation between 60% and 100%
-    const l = Math.floor(Math.random() * 20) + 70; // Lightness between 70% and 90%
+// Lush green palette generator
+function getLushGreenColor() {
+    const h = Math.floor(Math.random() * (120 - 85) + 85); // Hue for green shades
+    const s = Math.floor(Math.random() * (100 - 50) + 50); // Saturation for rich color
+    const l = Math.floor(Math.random() * (60 - 30) + 30); // Lightness for depth
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
@@ -35,13 +35,11 @@ function getFileSizes(dirPath) {
 function drawCircles(fileSizes) {
     // Sort files by size
     const sortedFiles = fileSizes.sort((a, b) => b.size - a.size);
-    // Calculate total area and assign area to each file relative to its size
-    const totalSize = sortedFiles.reduce((acc, file) => acc + file.size, 0);
     let filledArea = []; // Initialize filledArea as an array
 
     // Place circles using calculated radius
     sortedFiles.forEach(file => {
-        let targetArea = (file.size / totalSize) * (canvasWidth * canvasHeight);
+        let targetArea = (file.size / fileSizes.reduce((a, b) => a + b.size, 0)) * (canvasWidth * canvasHeight);
         let radius = Math.sqrt(targetArea / Math.PI);
 
         let placed = false;
@@ -63,7 +61,7 @@ function drawCircles(fileSizes) {
                 filledArea.push({ x, y, radius });
                 ctx.beginPath();
                 ctx.arc(x, y, radius, 0, Math.PI * 2);
-                ctx.fillStyle = getRandomColor();
+                ctx.fillStyle = getLushGreenColor();
                 ctx.fill();
                 ctx.closePath();
             }
@@ -75,7 +73,7 @@ function drawCircles(fileSizes) {
 const fileSizes = getFileSizes(directoryPath);
 drawCircles(fileSizes);
 
-const out = fs.createWriteStream('files_visualization_4k.jpg');
+const out = fs.createWriteStream('files_visualization_forest_4k.jpg');
 const stream = canvas.createJPEGStream({ quality: 1 }); // 100% quality JPEG
 stream.pipe(out);
-out.on('finish', () => console.log('The 4K JPEG file was created.'));
+out.on('finish', () => console.log('The 4K forest-themed JPEG file was created.'));
