@@ -2,13 +2,14 @@ const fs = require('fs');
 const { createCanvas } = require('canvas');
 
 const directoryPath = '.'; // Current directory
-const canvasSize = 1200;
-const canvas = createCanvas(canvasSize, canvasSize);
+const canvasWidth = 3840; // 4K Width
+const canvasHeight = 2160; // 4K Height
+const canvas = createCanvas(canvasWidth, canvasHeight);
 const ctx = canvas.getContext('2d');
 
 // Set a light beige background
 ctx.fillStyle = '#f5f5dc';
-ctx.fillRect(0, 0, canvasSize, canvasSize);
+ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
 // Soft, warm palette generator
 function getRandomColor() {
@@ -40,14 +41,14 @@ function drawCircles(fileSizes) {
 
     // Place circles using calculated radius
     sortedFiles.forEach(file => {
-        let targetArea = (file.size / totalSize) * (canvasSize * canvasSize);
+        let targetArea = (file.size / totalSize) * (canvasWidth * canvasHeight);
         let radius = Math.sqrt(targetArea / Math.PI);
 
         let placed = false;
         let attempts = 0;
         while (!placed && attempts < 1000) {
-            let x = Math.random() * (canvasSize - radius * 2) + radius;
-            let y = Math.random() * (canvasSize - radius * 2) + radius;
+            let x = Math.random() * (canvasWidth - radius * 2) + radius;
+            let y = Math.random() * (canvasHeight - radius * 2) + radius;
             placed = true;
             // Collision detection
             for (let i = 0; i < filledArea.length; i++) {
@@ -74,7 +75,7 @@ function drawCircles(fileSizes) {
 const fileSizes = getFileSizes(directoryPath);
 drawCircles(fileSizes);
 
-const out = fs.createWriteStream('files_visualization.jpg');
+const out = fs.createWriteStream('files_visualization_4k.jpg');
 const stream = canvas.createJPEGStream({ quality: 1 }); // 100% quality JPEG
 stream.pipe(out);
-out.on('finish', () => console.log('The JPEG file was created.'));
+out.on('finish', () => console.log('The 4K JPEG file was created.'));
