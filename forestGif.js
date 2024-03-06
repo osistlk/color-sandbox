@@ -2,15 +2,15 @@ const GIFEncoder = require('gifencoder');
 const { createCanvas } = require('canvas');
 const fs = require('fs');
 
-const width = 400;
-const height = 400;
-const frames = 30;
+const width = 1200;
+const height = 1200;
+const frames = 60;
 
 const encoder = new GIFEncoder(width, height);
 encoder.start();
 encoder.setRepeat(0); // 0 for infinite loop
-encoder.setDelay(100); // Frame delay in ms
-encoder.setQuality(10); // Image quality from 1-20
+encoder.setDelay(50); // Frame delay in ms
+encoder.setQuality(20); // Image quality from 1-20
 
 // eslint-disable-next-line no-unused-vars
 const stream = encoder.createWriteStream()
