@@ -1,18 +1,31 @@
 const os = require('os');
-const fs = require('fs');
 
-// CPU Usage
-const cpus = os.cpus();
-console.log('CPU Info:', cpus);
+function cpuAverage() {
+    const cpus = os.cpus();
 
-// Memory Usage
-const totalMemory = os.totalmem() / (1024 * 1024 * 1024); // in GB
-const freeMemory = os.freemem() / (1024 * 1024 * 1024); // in GB
-const usedMemory = totalMemory - freeMemory;
-console.log(`Memory Usage: ${usedMemory.toFixed(2)} GB / ${totalMemory.toFixed(2)} GB`);
+    let totalIdle = 0, totalTick = 0;
+    for (let i = 0, len = cpus.length; i < len; i++) {
+        const cpu = cpus[i];
 
-// Disk Usage
-fs.stat('C:\\', function (err, stats) {
-    const totalDisk = stats.size / (1024 * 1024 * 1024); // in GB
-    console.log(`Total Disk Size: ${totalDisk.toFixed(2)} GB`);
-});
+        for (type in cpu.times) {
+            totalTick += cpu.times[type];
+        }
+
+        totalIdle += cpu.times.idle;
+    }
+
+    return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
+}
+
+const startMeasure = cpuAverage();
+
+setTimeout(function () {
+    const endMeasure = cpuAverage();
+
+    const idleDifference = endMeasure.idle - startMeasure.idle;
+    const totalDifference = endMeasure.total - startMeasure.total;
+
+    const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
+
+    console.log(`CPU Usage: ${percentageCPU}%`);
+}, 100);
