@@ -4,9 +4,9 @@ const GIFEncoder = require('gifencoder');
 const ProgressBar = require('progress');
 
 const directoryPath = '.'; // Current directory
-const canvasWidth = 800; // 1080p Width
-const canvasHeight = 800; // 1080p Height
-const frameCount = 60; // Total number of frames for the animation
+const canvasWidth = 2560; // 1080p Width
+const canvasHeight = 1440; // 1080p Height
+const frameCount = 144; // Total number of frames for the animation
 const encoder = new GIFEncoder(canvasWidth, canvasHeight);
 
 // Initialize the progress bar

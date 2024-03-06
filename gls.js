@@ -1,7 +1,8 @@
 const fs = require('fs');
 const { createCanvas } = require('canvas');
+const ProgressBar = require('progress'); // Import progress
 
-const directoryPath = '.'; // Current directory
+const directoryPath = process.argv[2] || '.'; // Use path from args or default to current directory
 const canvasWidth = 3840; // 4K Width
 const canvasHeight = 2160; // 4K Height
 const canvas = createCanvas(canvasWidth, canvasHeight);
@@ -37,6 +38,9 @@ function drawCircles(fileSizes) {
     const sortedFiles = fileSizes.sort((a, b) => b.size - a.size);
     let filledArea = []; // Initialize filledArea as an array
 
+    // Create a new progress bar instance
+    const bar = new ProgressBar(':bar :percent', { total: sortedFiles.length });
+
     // Place circles using calculated radius
     sortedFiles.forEach(file => {
         let targetArea = (file.size / fileSizes.reduce((a, b) => a + b.size, 0)) * (canvasWidth * canvasHeight);
@@ -67,6 +71,9 @@ function drawCircles(fileSizes) {
             }
             attempts++;
         }
+
+        // Update the progress bar
+        bar.tick();
     });
 }
 
