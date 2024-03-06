@@ -1,10 +1,12 @@
 const GIFEncoder = require('gifencoder');
+const ProgressBar = require('progress');
+
 const { createCanvas } = require('canvas');
 const fs = require('fs');
 
-const width = 400;
-const height = 400;
-const frameCount = 60; // Total number of frames in the GIF
+const width = 2560;
+const height = 1440;
+const frameCount = 144; // Total number of frames in the GIF
 
 const colors = [
     [255, 0, 0], // red
@@ -43,6 +45,10 @@ function getColor(t) {
     return `rgb(${r},${g},${b})`;
 }
 
+
+// Create a new progress bar instance
+const bar = new ProgressBar(':bar :percent ETA :etas', { total: frameCount, width: 30, clear: true });
+
 for (let frame = 0; frame < frameCount; frame++) {
     const t = (Math.sin((frame / frameCount) * Math.PI * 2) + 1) / 2; // Parabolic effect
 
@@ -50,6 +56,9 @@ for (let frame = 0; frame < frameCount; frame++) {
     ctx.fillRect(0, 0, width, height);
 
     encoder.addFrame(ctx);
+
+    // Update the progress bar
+    bar.tick();
 }
 
 encoder.finish();
