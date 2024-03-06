@@ -17,9 +17,17 @@ function cpuAverage() {
     return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
-function generateBarChart(percentage) {
-    const length = Math.floor(percentage / 2); // scale down for readability
-    return Array(length).fill('=').join('');
+function generateBarChart(percentages) {
+    const chart = Array(10).fill().map(() => Array(20).fill(' ')); // create a 10x20 2D array filled with spaces
+
+    for (let i = 0; i < percentages.length; i++) {
+        const height = Math.round(percentages[i] / 10); // scale down to 10 characters tall
+        for (let j = 0; j < height; j++) {
+            chart[9 - j][i] = '='; // fill from the bottom up
+        }
+    }
+
+    return chart.map(row => row.join('')).join('\n'); // convert the 2D array to a string
 }
 
 let cpuPercentages = [];
@@ -36,7 +44,7 @@ setInterval(function () {
         const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
 
         cpuPercentages.push(percentageCPU);
-        if (cpuPercentages.length > 100) { // keep the last 100 measurements
+        if (cpuPercentages.length > 20) { // keep the last 20 measurements
             cpuPercentages.shift();
         }
 
@@ -45,6 +53,6 @@ setInterval(function () {
         console.clear();
         console.log(`CPU Usage: ${percentageCPU}%`);
         console.log(`Average CPU Usage: ${averageCPU.toFixed(2)}%`);
-        console.log(`Bar Chart:\n${generateBarChart(percentageCPU)}`);
+        console.log(`Bar Chart:\n${generateBarChart(cpuPercentages)}`);
     }, 100);
 }, 1000);
