@@ -4,8 +4,8 @@ const GIFEncoder = require('gifencoder');
 const ProgressBar = require('progress');
 
 const directoryPath = '.'; // Current directory
-const canvasWidth = 1920; // 1080p Width
-const canvasHeight = 1080; // 1080p Height
+const canvasWidth = 400; // 1080p Width
+const canvasHeight = 400; // 1080p Height
 const frameCount = 60; // Total number of frames for the animation
 const encoder = new GIFEncoder(canvasWidth, canvasHeight);
 
@@ -44,8 +44,42 @@ function drawCircles(fileSizes, scaleFactor) {
     ctx.fillStyle = '#013220'; // Dark green background
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    fileSizes.forEach((file, index) => {
-        // Your circle drawing logic here.
+    let placedCircles = [];
+    const attemptLimit = 100; // Limit attempts to place a circle to prevent infinite loops
+
+    fileSizes.forEach(file => {
+        const baseSize = 10; // Minimum size for visibility
+        let radius = baseSize + (file.size / Math.max(...fileSizes.map(f => f.size)) * 100 * scaleFactor);
+
+        let placed = false;
+        let attempts = 0;
+
+        while (!placed && attempts < attemptLimit) {
+            let x = radius + Math.random() * (canvasWidth - 2 * radius); // Random position, respecting margins
+            let y = radius + Math.random() * (canvasHeight - 2 * radius);
+
+            // Check for overlaps
+            let overlap = placedCircles.some(circle => {
+                let dx = circle.x - x;
+                let dy = circle.y - y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < (circle.radius + radius);
+            });
+
+            if (!overlap) {
+                placedCircles.push({ x, y, radius });
+                placed = true;
+            }
+
+            attempts++;
+        }
+
+        if (placed) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = getForestColor();
+            ctx.fill();
+        }
     });
 }
 
