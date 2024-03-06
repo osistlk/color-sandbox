@@ -28,6 +28,7 @@ setInterval(function () {
 
         const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
 
+        console.clear();
         console.log(`CPU Usage: ${percentageCPU}%`);
     }, 100);
 }, 1000);
