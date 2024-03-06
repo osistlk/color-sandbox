@@ -17,15 +17,17 @@ function cpuAverage() {
     return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
-const startMeasure = cpuAverage();
+setInterval(function () {
+    const startMeasure = cpuAverage();
 
-setTimeout(function () {
-    const endMeasure = cpuAverage();
+    setTimeout(function () {
+        const endMeasure = cpuAverage();
 
-    const idleDifference = endMeasure.idle - startMeasure.idle;
-    const totalDifference = endMeasure.total - startMeasure.total;
+        const idleDifference = endMeasure.idle - startMeasure.idle;
+        const totalDifference = endMeasure.total - startMeasure.total;
 
-    const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
+        const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
 
-    console.log(`CPU Usage: ${percentageCPU}%`);
-}, 100);
+        console.log(`CPU Usage: ${percentageCPU}%`);
+    }, 100);
+}, 1000);
