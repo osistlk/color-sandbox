@@ -20,34 +20,50 @@ function getFileSizes(dirPath) {
         const stats = fs.statSync(`${dirPath}/${fileName}`);
         return { fileName, size: stats.size };
     });
-    // Sort by size, largest first
-    return fileStats.sort((a, b) => b.size - a.size);
+    // Shuffle and sort by size, largest first
+    return fileStats
+        .sort(() => 0.5 - Math.random())
+        .sort((a, b) => b.size - a.size);
 }
 
 // Function to draw non-overlapping circles based on file sizes
 function drawCircles(fileSizes) {
-    let offsetX = 0;
-    let offsetY = 0;
-    let maxHeightInRow = 0;
+    // Sort files by size
+    const sortedFiles = fileSizes.sort((a, b) => b.size - a.size);
+    // Calculate total area and assign area to each file relative to its size
+    const totalSize = sortedFiles.reduce((acc, file) => acc + file.size, 0);
+    let filledArea = []; // Initialize filledArea as an array
 
-    fileSizes.forEach((file) => {
-        const radius = Math.sqrt(file.size) / 100; // Arbitrary size scaling, adjust as needed
-        if (offsetX + radius * 2 > canvasSize) { // Move to next row if width exceeded
-            offsetX = 0;
-            offsetY += maxHeightInRow + radius; // Start at the end of the tallest circle in the previous row
-            maxHeightInRow = 0;
-        }
-        if (radius * 2 > maxHeightInRow) {
-            maxHeightInRow = radius * 2;
-        }
-        const color = getRandomColor();
-        ctx.beginPath();
-        ctx.arc(offsetX + radius, offsetY + radius, radius, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.closePath();
+    // Place circles using calculated radius
+    sortedFiles.forEach(file => {
+        let targetArea = (file.size / totalSize) * (canvasSize * canvasSize);
+        let radius = Math.sqrt(targetArea / Math.PI);
 
-        offsetX += radius * 2; // Move offset for the next circle
+        let placed = false;
+        let attempts = 0;
+        while (!placed && attempts < 1000) {
+            let x = Math.random() * (canvasSize - radius * 2) + radius;
+            let y = Math.random() * (canvasSize - radius * 2) + radius;
+            placed = true;
+            // Collision detection
+            for (let i = 0; i < filledArea.length; i++) {
+                let other = filledArea[i];
+                let distance = Math.sqrt((other.x - x) ** 2 + (other.y - y) ** 2);
+                if (distance < (other.radius + radius)) {
+                    placed = false;
+                    break;
+                }
+            }
+            if (placed) {
+                filledArea.push({ x, y, radius });
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = getRandomColor();
+                ctx.fill();
+                ctx.closePath();
+            }
+            attempts++;
+        }
     });
 }
 
