@@ -4,8 +4,8 @@ const GIFEncoder = require('gifencoder');
 const ProgressBar = require('progress');
 
 const directoryPath = '.'; // Current directory
-const canvasWidth = 400; // 1080p Width
-const canvasHeight = 400; // 1080p Height
+const canvasWidth = 800; // 1080p Width
+const canvasHeight = 800; // 1080p Height
 const frameCount = 60; // Total number of frames for the animation
 const encoder = new GIFEncoder(canvasWidth, canvasHeight);
 
@@ -21,7 +21,7 @@ const bar = new ProgressBar('Generating GIF [:bar] :percent :etas', {
 encoder.createReadStream().pipe(fs.createWriteStream('animated_forest_1080p.gif'));
 encoder.start();
 encoder.setRepeat(0); // 0 for no repeat
-encoder.setDelay(16); // Approximation to target a high frame rate feel
+encoder.setDelay(500); // Approximation to target a high frame rate feel
 encoder.setQuality(10); // Image quality
 
 const canvas = createCanvas(canvasWidth, canvasHeight);
@@ -53,10 +53,11 @@ function drawCircles(fileSizes, scaleFactor) {
 
         let placed = false;
         let attempts = 0;
+        let x, y; // Declare x and y outside the while loop to ensure they're accessible later
 
         while (!placed && attempts < attemptLimit) {
-            let x = radius + Math.random() * (canvasWidth - 2 * radius); // Random position, respecting margins
-            let y = radius + Math.random() * (canvasHeight - 2 * radius);
+            x = radius + Math.random() * (canvasWidth - 2 * radius); // Random position, respecting margins
+            y = radius + Math.random() * (canvasHeight - 2 * radius);
 
             // Check for overlaps
             let overlap = placedCircles.some(circle => {
@@ -76,11 +77,12 @@ function drawCircles(fileSizes, scaleFactor) {
 
         if (placed) {
             ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.arc(x, y, radius, 0, Math.PI * 2); // x and y are now correctly in scope
             ctx.fillStyle = getForestColor();
             ctx.fill();
         }
     });
+
 }
 
 const fileSizes = getFileSizes(directoryPath);
