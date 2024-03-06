@@ -23,7 +23,7 @@ function generateBarChart(percentages) {
     for (let i = 0; i < percentages.length; i++) {
         const height = Math.round(percentages[i] / 10); // scale down to 10 characters tall
         for (let j = 0; j < height; j++) {
-            chart[9 - j][i] = '='; // fill from the bottom up
+            chart[9 - j][i] = '+'; // fill from the bottom up
         }
     }
 
@@ -51,8 +51,8 @@ setInterval(function () {
         const averageCPU = cpuPercentages.reduce((a, b) => a + b, 0) / cpuPercentages.length;
 
         console.clear();
-        console.log(`CPU Usage: ${percentageCPU}%`);
+        console.log(`Current CPU Usage: ${percentageCPU}%`);
         console.log(`Average CPU Usage: ${averageCPU.toFixed(2)}%`);
-        console.log(`Bar Chart:\n${generateBarChart(cpuPercentages)}`);
+        console.log(`History:\n${generateBarChart(cpuPercentages)}`);
     }, 100);
 }, 1000);
