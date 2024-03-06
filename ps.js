@@ -17,6 +17,11 @@ function cpuAverage() {
     return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
+function generateHistogram(percentage) {
+    const length = Math.floor(percentage / 2); // scale down for readability
+    return Array(length).fill('*').join('');
+}
+
 let cpuPercentages = [];
 
 setInterval(function () {
@@ -40,5 +45,6 @@ setInterval(function () {
         console.clear();
         console.log(`CPU Usage: ${percentageCPU}%`);
         console.log(`Average CPU Usage: ${averageCPU.toFixed(2)}%`);
+        console.log(`Histogram:\n${generateHistogram(percentageCPU)}`);
     }, 100);
 }, 1000);
