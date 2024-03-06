@@ -17,6 +17,8 @@ function cpuAverage() {
     return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
+let cpuPercentages = [];
+
 setInterval(function () {
     const startMeasure = cpuAverage();
 
@@ -28,7 +30,15 @@ setInterval(function () {
 
         const percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
 
+        cpuPercentages.push(percentageCPU);
+        if (cpuPercentages.length > 100) { // keep the last 100 measurements
+            cpuPercentages.shift();
+        }
+
+        const averageCPU = cpuPercentages.reduce((a, b) => a + b, 0) / cpuPercentages.length;
+
         console.clear();
         console.log(`CPU Usage: ${percentageCPU}%`);
+        console.log(`Average CPU Usage: ${averageCPU.toFixed(2)}%`);
     }, 100);
 }, 1000);
