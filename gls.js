@@ -6,6 +6,10 @@ const canvasSize = 1200;
 const canvas = createCanvas(canvasSize, canvasSize);
 const ctx = canvas.getContext('2d');
 
+// Set a light beige background
+ctx.fillStyle = '#f5f5dc';
+ctx.fillRect(0, 0, canvasSize, canvasSize);
+
 // Soft, warm palette generator
 function getRandomColor() {
     const h = Math.floor(Math.random() * 35); // Hue between 0 and 35 for a warm palette
