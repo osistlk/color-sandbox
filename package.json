@@ -16,6 +16,7 @@
   "dependencies": {
     "canvas": "^2.11.2",
     "gifencoder": "^2.0.1",
+    "loudness": "^0.4.2",
     "progress": "^2.0.3"
   },
   "devDependencies": {
