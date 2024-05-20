@@ -1,7 +1,5 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld(
-    'nodeProcess', {
-    getCpuUsage: () => process.getCPUUsage().percentCPUUsage
-}
-)
+contextBridge.exposeInMainWorld("nodeProcess", {
+  getCpuUsage: () => process.getCPUUsage().percentCPUUsage,
+});
