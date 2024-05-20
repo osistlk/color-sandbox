@@ -1,43 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Wave Simulation</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      transition: background-color 0.5s;
-    }
-
-    canvas {
-      border: 1px solid #ccc; /* Light border by default */
-    }
-
-    @media (prefers-color-scheme: dark) {
+  <head>
+    <title>Wave Simulation</title>
+    <style>
       body {
-        background-color: #333;
-        color: white;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        transition: background-color 0.5s;
       }
 
       canvas {
-        border: 1px solid #aaa; /* Darker border for dark mode */
+        border: 1px solid #ccc; /* Light border by default */
       }
-    }
 
-    @media (prefers-color-scheme: light) {
-      body {
-        background-color: #fff;
-        color: black;
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #333;
+          color: white;
+        }
+
+        canvas {
+          border: 1px solid #aaa; /* Darker border for dark mode */
+        }
       }
-    }
-  </style>
-</head>
-<body>
-  <canvas id="waveCanvas" width="800" height="600"></canvas>
-  <script src="renderer.js"></script>
-</body>
+
+      @media (prefers-color-scheme: light) {
+        body {
+          background-color: #fff;
+          color: black;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="waveCanvas" width="800" height="600"></canvas>
+    <script src="renderer.js"></script>
+  </body>
 </html>

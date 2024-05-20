@@ -8,7 +8,9 @@
     "dev": "nodemon --exec npm start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "prepare": "npm run format && npm run format"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
   "devDependencies": {
     "electron": "^29.1.1",
     "eslint": "^8.57.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
   }
 }

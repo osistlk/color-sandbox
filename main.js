@@ -14,7 +14,7 @@ function createWindow() {
         preload: preloadPath,
     });
 
-    win.loadFile('index.html');
+    win.loadFile("index.html");
 }
 
 app.whenReady().then(createWindow);
