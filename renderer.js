@@ -24,4 +24,10 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM content loaded')
+    window.electron.test();
+});
+
+
 draw();
